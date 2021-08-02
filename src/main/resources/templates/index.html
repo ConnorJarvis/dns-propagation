@@ -1,0 +1,82 @@
+
+
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="DNS Propagation Checker">
+    <meta name="author" content="Connor Jarvis">
+    <title>DNS Propagation Checker</title>
+    <link rel="canonical" href="">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <h1 class="mt-5">DNS Propagation Checker</h1>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" aria-label="Input data to query" placeholder="example.com" id="query-value" style="width:50%;">
+                    <select class="form-select" aria-label="Choose DNS record type" id="dns-record-type">
+                        <option th:each="dnsRecordType : ${dnsRecordTypes}" th:value="${dnsRecordType}" th:text="${dnsRecordType}"></option>
+                    </select>
+                    <button class="btn btn-outline-secondary" type="button" id="search-button" onclick="checkPropagation()">Search</button>
+                </div>
+                <table class="table table-hover">
+                    <tr th:each="dnsServer : ${dnsServers}">
+                        <td style="width:1%;vertical-align: middle;"><img  th:src="'/svg/'+${dnsServer.countryShortCode}+'.svg'" style="width:30px;"></td>
+                        <td th:text="${dnsServer.location}" style="white-space: nowrap;width:1%; vertical-align: middle;" ></td>
+                        <td th:id="${dnsServer.id}+'-result'" style="text-align:right;"></td>
+                        <!--                          <td th:id="${dnsServer.id}+'-valid'" style="width:1%;">-</td>-->
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script th:inline="javascript">
+         var iteration = 0;
+         var servers = [[${dnsServers}]];
+         function checkPropagation() {
+             iteration = iteration + 1;
+             var selectDnsQueryType = document.getElementById('dns-record-type');
+             var dnsQueryType = selectDnsQueryType.options[selectDnsQueryType.selectedIndex].value;
+             var queryValue = document.getElementById("query-value").value
+             for(var i = 0; i < servers.length; i++) {
+                 document.getElementById(servers[i].id+'-result').innerHTML = ""
+                 getJSON('/api/v1/dnsrequest?serverId='+servers[i].id+'&dnsRecordType='+dnsQueryType+'&value='+queryValue,servers[i].id,iteration, function(err, data, id, currentIteration) {
+                    if(currentIteration !== iteration){
+                        return;
+                    }
+                   if (err !== null || data.length===0) {
+                     document.getElementById(id+'-result').innerHTML = "error"
+                   } else {
+                     var returnedData = ""
+                     for(var dataIndex = 0; dataIndex<data.length; dataIndex++) {
+                         returnedData = returnedData + data[dataIndex] + '<br>'
+                     }
+                     document.getElementById(id+'-result').innerHTML = returnedData
+                   }
+                 });
+             }
+         }
+         var getJSON = function(url, id, currentIteration, callback) {
+             var xhr = new XMLHttpRequest();
+             xhr.open('GET', url, true);
+             xhr.responseType = 'json';
+             xhr.onload = function() {
+               var status = xhr.status;
+               if (status === 200) {
+                 callback(null, xhr.response, id, currentIteration);
+               } else {
+                 callback(status, xhr.response, id, currentIteration);
+               }
+             };
+             xhr.send();
+         };
+      </script>
+</body>
+</html>
+

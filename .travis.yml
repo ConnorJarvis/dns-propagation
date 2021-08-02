@@ -1,0 +1,19 @@
+language: java
+jdk: openjdk11
+  
+sudo: required
+  
+services:
+  - docker
+
+script:
+- ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+- ./mvnw package && java -jar target/dnschecker-docker-0.0.1.jar
+
+after_success:
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+- export IMAGE_NAME=connorj/dnschecker
+- docker build -t $IMAGE_NAME:$COMMIT .
+- docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:$TAG
+- docker push $IMAGE_NAME
