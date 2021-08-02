@@ -20,44 +20,38 @@ public class DNSQuery {
 
     private DNSRecordType dnsRecordType;
 
-    private Resolver resolver;
-
-    private Lookup lookup;
-
-    private Record[] records;
 
     public DNSQuery(String dnsServerIp, String value, DNSRecordType dnsRecordType) throws UnknownHostException, TextParseException {
         this.dnsServerIp = dnsServerIp;
         this.value = value;
         this.dnsRecordType = dnsRecordType;
-        resolver = new SimpleResolver(dnsServerIp);
-        lookup = new Lookup(value, dnsRecordType.asDnsType());
-        lookup.setResolver(resolver);
-
     }
 
-    public List<String> doQuery() {
-        records = lookup.run();
+    public List<String> doQuery() throws UnknownHostException, TextParseException {
+        Resolver resolver = new SimpleResolver(dnsServerIp);
+        Lookup lookup = new Lookup(value, dnsRecordType.asDnsType());
+        lookup.setResolver(resolver);
+        Record[] records = lookup.run();
         if (records == null) {
             List<String> result = new ArrayList<>();
             return result;
         }
         switch (dnsRecordType){
-            case A: return resolveAQuery();
-            case AAAA: return resolveAAAAQuery();
-            case TXT: return resolveTXTQuery();
-            case CNAME: return resolveCNAMEQuery();
-            case MX: return  resolveMXQuery();
-            case NS: return resolveNSQuery();
-            case PTR: return resolvePTRQuery();
-            case SRV: return resolveSRVQuery();
+            case A: return resolveAQuery(records);
+            case AAAA: return resolveAAAAQuery(records);
+            case TXT: return resolveTXTQuery(records);
+            case CNAME: return resolveCNAMEQuery(records);
+            case MX: return  resolveMXQuery(records);
+            case NS: return resolveNSQuery(records);
+            case PTR: return resolvePTRQuery(records);
+            case SRV: return resolveSRVQuery(records);
         }
 
         List<String> result = new ArrayList<>();
         return result;
     }
 
-    public List<String> resolveAQuery() {
+    public List<String> resolveAQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
@@ -67,7 +61,7 @@ public class DNSQuery {
         return result;
     }
 
-    public List<String> resolveAAAAQuery() {
+    public List<String> resolveAAAAQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
@@ -77,7 +71,7 @@ public class DNSQuery {
         return result;
     }
 
-    public List<String> resolveCNAMEQuery() {
+    public List<String> resolveCNAMEQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
@@ -86,7 +80,7 @@ public class DNSQuery {
         return result;
     }
 
-    public List<String> resolveMXQuery() {
+    public List<String> resolveMXQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
@@ -95,7 +89,7 @@ public class DNSQuery {
         return result;
     }
 
-    public List<String> resolveNSQuery() {
+    public List<String> resolveNSQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
@@ -104,7 +98,7 @@ public class DNSQuery {
         return result;
     }
 
-    public List<String> resolvePTRQuery() {
+    public List<String> resolvePTRQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
@@ -113,7 +107,7 @@ public class DNSQuery {
         return result;
     }
 
-    public List<String> resolveSRVQuery() {
+    public List<String> resolveSRVQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
@@ -122,7 +116,7 @@ public class DNSQuery {
         return result;
     }
 
-    public List<String> resolveTXTQuery() {
+    public List<String> resolveTXTQuery(Record[] records) {
         List<String> result = new ArrayList<>();
 
         for (Record record : records) {
