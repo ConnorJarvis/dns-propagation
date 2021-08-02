@@ -18,7 +18,7 @@ public interface DNSServerRepository extends JpaRepository<DNSServer, Long>, Jpa
 
     @Cacheable("dnsserver")
     @Override
-    @Query(value = "select country from DNSServer where id=?1")
+    @Query(value = "select * from DNSServer where id=?1")
     DNSServer getById(Long id);
 
     @Cacheable("dnsserver")

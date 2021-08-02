@@ -1,3 +1,5 @@
+
+[![Build Status](https://app.travis-ci.com/ConnorJarvis/dnschecker.svg?branch=main)](https://app.travis-ci.com/ConnorJarvis/dnschecker)
 # DNS Propagation Checker
  
 Web application that allows you to check the status of your DNS records against multiple global DNS servers. 

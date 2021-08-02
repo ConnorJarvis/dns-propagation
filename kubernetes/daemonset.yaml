@@ -13,7 +13,7 @@ spec:
         run: dnspropagation
     spec:
       containers:
-      - image: connorj/dnschecker
+      - image: connorj/dnschecker:latest
         imagePullPolicy: Always
         name: dnspropagation
         volumeMounts:
