@@ -3,11 +3,12 @@ package com.example.dnschecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xbill.DNS.*;
 
-import javax.persistence.Transient;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 
 public class DNSQuery {
 
@@ -28,9 +29,13 @@ public class DNSQuery {
     }
 
     public List<String> doQuery() throws UnknownHostException, TextParseException {
-        Resolver resolver = new SimpleResolver(dnsServerIp);
+        Resolver resolver = new SimpleResolver(InetAddress.getByName(dnsServerIp));
         Lookup lookup = new Lookup(value, dnsRecordType.asDnsType());
+        resolver.setTimeout(Duration.ofSeconds(10));
+        resolver.setTCP(true);
         lookup.setResolver(resolver);
+        lookup.setNdots(0);
+
         Record[] records = lookup.run();
         if (records == null) {
             List<String> result = new ArrayList<>();
