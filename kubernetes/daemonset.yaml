@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: web
+  namespace: dnspropagation
+spec:
+  selector:
+    matchLabels:
+      run: dnspropagation
+  template:
+    metadata:
+      labels:
+        run: dnspropagation
+    spec:
+      containers:
+      - image: connorj/dnschecker
+        imagePullPolicy: Always
+        name: dnspropagation
+        volumeMounts:
+        - name: keys
+          mountPath: "/vault/secrets"
+          readOnly: true
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+      volumes:
+        - name: keys
+          secret:
+            secretName: dnspropagation
+        
