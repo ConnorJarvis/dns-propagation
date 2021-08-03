@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.xbill.DNS.TextParseException;
 
+import java.net.IDN;
 import java.net.UnknownHostException;
 import java.util.List;
 
@@ -19,8 +20,6 @@ public class DNSRequestController {
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/api/v1/dnsrequest")
     public List<String> dnsRequest(@RequestParam(value= "serverId") Long serverId, @RequestParam(value= "dnsRecordType") DNSRecordType dnsRecordType, @RequestParam(value= "value") String value) throws UnknownHostException, TextParseException {
-
-//        DNSRequest dnsRequest = new DNSRequest(dnsRecordType, value, serverId);
         DNSServer dnsServer = dnsServerRepository.getById(serverId);
         String dnsServerIp = dnsServer.getServerIp();
         DNSQuery dnsQuery = new DNSQuery(dnsServerIp, value, dnsRecordType);
