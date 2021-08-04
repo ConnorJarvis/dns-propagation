@@ -1,10 +1,11 @@
 
-[![Build Status](https://app.travis-ci.com/ConnorJarvis/dnschecker.svg?branch=main)](https://app.travis-ci.com/ConnorJarvis/dnschecker)
+[![Build Status](https://app.travis-ci.com/ConnorJarvis/dns-propagation.svg?branch=main)](https://app.travis-ci.com/ConnorJarvis/dns-propagation)
 # DNS Propagation Checker
  
 Web application that allows you to check the status of your DNS records against multiple global DNS servers. 
 
-Built in Java using [Spring Boot](https://spring.io/projects/spring-boot). Data stored in [CockroachDB](https://www.cockroachlabs.com/) + [Redis](https://redis.io/). Deployed on [Kubernetes](https://kubernetes.io/)
+Built in Java using [Spring Boot](https://spring.io/projects/spring-boot). Data stored in [CockroachDB](https://www.cockroachlabs.com/). Deployed on [Kubernetes](https://kubernetes.io/)
+
 
 
 ## Motivation
